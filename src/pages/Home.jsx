@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 export const Home = () => {
   const dispatch = useDispatch();
   const { posts, tags } = useSelector((state) => state.posts);
+  const userData = useSelector((state) => state.auth.data);
 
   const isPostLoading = posts.status === "loading";
   const isTagsLoading = tags.status === "loading";
@@ -38,16 +39,19 @@ export const Home = () => {
               <Post key={index} isLoading={true} />
             ) : (
               <Post
+                key={index}
                 _id={obj._id}
                 title={obj.title}
-                imageUrl={obj.imageUrl}
+                imageUrl={
+                  obj.imageUrl ? `http://localhost:4444${obj.imageUrl}` : ""
+                }
                 user={obj.user}
                 createdAt={obj.createdAt}
                 viewsCount={obj.viewsCount}
                 commentsCount={3}
                 // isLoading={true}
                 tags={obj.tags}
-                isEditable
+                isEditable={userData?._id === obj.user._id}
               />
             )
           )}
