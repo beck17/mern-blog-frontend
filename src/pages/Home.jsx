@@ -7,19 +7,24 @@ import { Post } from "../components";
 import { TagsBlock } from "../components";
 import { CommentsBlock } from "../components";
 import { fetchPosts, fetchTags } from "../redux/slices/posts";
+import { fetchLastComments, fetchComments } from "../redux/slices/comments";
 import { useDispatch, useSelector } from "react-redux";
 
 export const Home = () => {
   const dispatch = useDispatch();
+
   const { posts, tags } = useSelector((state) => state.posts);
+  const { lastComments } = useSelector((state) => state.comment);
   const userData = useSelector((state) => state.auth.data);
 
   const isPostLoading = posts.status === "loading";
   const isTagsLoading = tags.status === "loading";
+  const isLastCommentsLoading = lastComments.status === "loading";
 
   useEffect(() => {
     dispatch(fetchPosts());
     dispatch(fetchTags());
+    dispatch(fetchLastComments());
   }, []);
 
   return (
@@ -48,7 +53,7 @@ export const Home = () => {
                 user={obj.user}
                 createdAt={obj.createdAt}
                 viewsCount={obj.viewsCount}
-                commentsCount={3}
+                commentsCount={obj.comments.length}
                 // isLoading={true}
                 tags={obj.tags}
                 isEditable={userData?._id === obj.user._id}
@@ -59,23 +64,8 @@ export const Home = () => {
         <Grid xs={4} item>
           <TagsBlock items={tags.items} isLoading={isTagsLoading} />
           <CommentsBlock
-            items={[
-              {
-                user: {
-                  fullName: "Вася Пупкин",
-                  avatarUrl: "https://mui.com/static/images/avatar/1.jpg",
-                },
-                text: "Это тестовый комментарий",
-              },
-              {
-                user: {
-                  fullName: "Иван Иванов",
-                  avatarUrl: "https://mui.com/static/images/avatar/2.jpg",
-                },
-                text: "When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top",
-              },
-            ]}
-            isLoading={false}
+            items={lastComments.items}
+            isLoading={isLastCommentsLoading}
           />
         </Grid>
       </Grid>

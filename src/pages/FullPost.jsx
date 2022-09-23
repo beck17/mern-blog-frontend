@@ -11,7 +11,7 @@ export const FullPost = () => {
   const [data, setData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
-
+  console.log(data);
   useEffect(() => {
     setIsLoading(true);
     axios
@@ -39,7 +39,7 @@ export const FullPost = () => {
         user={data.user}
         createdAt={data.createdAt}
         viewsCount={data.viewsCount}
-        commentsCount={3}
+        commentsCount={data.comments.length}
         tags={data.tags}
         isFullPost
       >
@@ -48,18 +48,19 @@ export const FullPost = () => {
       <CommentsBlock
         items={[
           {
-            user: {
+            author: {
               fullName: "Вася Пупкин",
               avatarUrl: "https://mui.com/static/images/avatar/1.jpg",
             },
-            text: "Это тестовый комментарий 555555",
+            comment: "Это тестовый комментарий 555555",
           },
           {
-            user: {
+            author: {
               fullName: "Иван Иванов",
               avatarUrl: "https://mui.com/static/images/avatar/2.jpg",
             },
-            text: "When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top",
+            comment:
+              "When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top",
           },
         ]}
         isLoading={false}
