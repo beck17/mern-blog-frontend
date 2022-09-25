@@ -7,7 +7,7 @@ import { Post } from "../components";
 import { TagsBlock } from "../components";
 import { CommentsBlock } from "../components";
 import { fetchPosts, fetchTags } from "../redux/slices/posts";
-import { fetchLastComments, fetchComments } from "../redux/slices/comments";
+import { fetchLastComments } from "../redux/slices/comments";
 import { useDispatch, useSelector } from "react-redux";
 
 export const Home = () => {
@@ -25,7 +25,7 @@ export const Home = () => {
     dispatch(fetchPosts());
     dispatch(fetchTags());
     dispatch(fetchLastComments());
-  }, []);
+  }, [dispatch]);
 
   return (
     <>

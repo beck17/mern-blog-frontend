@@ -6,12 +6,19 @@ import { Post } from "../components";
 import { Index } from "../components";
 import { CommentsBlock } from "../components";
 import axios from "../axios/axios";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCommentsOnPost } from "../redux/slices/comments";
 
 export const FullPost = () => {
+  const dispatch = useDispatch();
+
+  const { comments } = useSelector((state) => state.comment);
+  const isCommentsLoading = comments.status === "loading";
+
   const [data, setData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
-  console.log(data);
+
   useEffect(() => {
     setIsLoading(true);
     axios
@@ -24,7 +31,8 @@ export const FullPost = () => {
         console.warn(err);
         alert("Ошибка при получении статьи");
       });
-  }, [id]);
+    dispatch(fetchCommentsOnPost(id));
+  }, [id, dispatch]);
 
   if (isLoading) {
     return <Post isLoading={isLoading} isFullPost />;
@@ -45,27 +53,13 @@ export const FullPost = () => {
       >
         <ReactMarkdown children={data.text} />
       </Post>
-      <CommentsBlock
-        items={[
-          {
-            author: {
-              fullName: "Вася Пупкин",
-              avatarUrl: "https://mui.com/static/images/avatar/1.jpg",
-            },
-            comment: "Это тестовый комментарий 555555",
-          },
-          {
-            author: {
-              fullName: "Иван Иванов",
-              avatarUrl: "https://mui.com/static/images/avatar/2.jpg",
-            },
-            comment:
-              "When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top",
-          },
-        ]}
-        isLoading={false}
-      >
-        <Index />
+      <CommentsBlock items={comments.items} isLoading={isCommentsLoading}>
+        <Index
+          postId={data._id}
+          imageUrl={
+            data.imageUrl ? `http://localhost:4444${data.imageUrl}` : ""
+          }
+        />
       </CommentsBlock>
     </>
   );
