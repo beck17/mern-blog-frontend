@@ -16,11 +16,13 @@ export const FullPost = () => {
   const isCommentsLoading = comments.status === "loading";
 
   const [data, setData] = useState({});
+  const [user, setUser] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
 
   useEffect(() => {
     setIsLoading(true);
+    dispatch(fetchCommentsOnPost(id));
     axios
       .get(`/posts/${id}`)
       .then((res) => {
@@ -31,7 +33,17 @@ export const FullPost = () => {
         console.warn(err);
         alert("Ошибка при получении статьи");
       });
-    dispatch(fetchCommentsOnPost(id));
+    setIsLoading(true);
+    axios
+      .get(`auth/me`)
+      .then((res) => {
+        setUser(res.data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.warn(err);
+        alert("Ошибка при получении пользователя");
+      });
   }, [id, dispatch]);
 
   if (isLoading) {
@@ -56,9 +68,7 @@ export const FullPost = () => {
       <CommentsBlock items={comments.items} isLoading={isCommentsLoading}>
         <Index
           postId={data._id}
-          imageUrl={
-            data.imageUrl ? `http://localhost:4444${data.imageUrl}` : ""
-          }
+          imageUrl={user.avatarUrl ? user.avatarUrl : ""}
         />
       </CommentsBlock>
     </>
