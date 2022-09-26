@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Grid from "@mui/material/Grid";
@@ -6,12 +6,18 @@ import Grid from "@mui/material/Grid";
 import { Post } from "../components";
 import { TagsBlock } from "../components";
 import { CommentsBlock } from "../components";
-import { fetchPosts, fetchTags } from "../redux/slices/posts";
+import {
+  fetchPosts,
+  fetchTags,
+  fetchPopulatePosts,
+} from "../redux/slices/posts";
 import { fetchLastComments } from "../redux/slices/comments";
 import { useDispatch, useSelector } from "react-redux";
 
 export const Home = () => {
   const dispatch = useDispatch();
+
+  const [newCategory, setCategory] = useState(0);
 
   const { posts, tags } = useSelector((state) => state.posts);
   const { lastComments } = useSelector((state) => state.comment);
@@ -22,20 +28,27 @@ export const Home = () => {
   const isLastCommentsLoading = lastComments.status === "loading";
 
   useEffect(() => {
-    dispatch(fetchPosts());
     dispatch(fetchTags());
     dispatch(fetchLastComments());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (newCategory === 0) {
+      dispatch(fetchPosts());
+    } else {
+      dispatch(fetchPopulatePosts());
+    }
+  }, [dispatch, newCategory]);
 
   return (
     <>
       <Tabs
         style={{ marginBottom: 15 }}
-        value={0}
+        value={newCategory}
         aria-label="basic tabs example"
       >
-        <Tab label="Новые" />
-        <Tab label="Популярные" />
+        <Tab label="Новые" onClick={() => setCategory(0)} />
+        <Tab label="Популярные" onClick={() => setCategory(1)} />
       </Tabs>
       <Grid container spacing={4}>
         <Grid xs={8} item>
