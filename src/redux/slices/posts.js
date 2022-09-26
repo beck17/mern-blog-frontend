@@ -14,6 +14,14 @@ export const fetchPopulatePosts = createAsyncThunk(
   }
 );
 
+export const fetchPostsOnTag = createAsyncThunk(
+  "posts/fetchPostsOnTag",
+  async (tag) => {
+    const { data } = await axios.get(`/tags/${tag}`);
+    return data;
+  }
+);
+
 export const fetchTags = createAsyncThunk("posts/fetchTags", async () => {
   const { data } = await axios.get("/tags");
   return data;
@@ -63,6 +71,19 @@ const postSlice = createSlice({
       state.posts.status = "loaded";
     },
     [fetchPopulatePosts.rejected]: (state) => {
+      state.posts.items = [];
+      state.posts.status = "error";
+    },
+    // получение постов по тэгу
+    [fetchPostsOnTag.pending]: (state) => {
+      state.posts.items = [];
+      state.posts.status = "loading";
+    },
+    [fetchPostsOnTag.fulfilled]: (state, action) => {
+      state.posts.items = action.payload;
+      state.posts.status = "loaded";
+    },
+    [fetchPostsOnTag.rejected]: (state) => {
       state.posts.items = [];
       state.posts.status = "error";
     },

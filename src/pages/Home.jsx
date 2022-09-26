@@ -10,14 +10,17 @@ import {
   fetchPosts,
   fetchTags,
   fetchPopulatePosts,
+  fetchPostsOnTag,
 } from "../redux/slices/posts";
 import { fetchLastComments } from "../redux/slices/comments";
 import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
 
 export const Home = () => {
   const dispatch = useDispatch();
 
   const [newCategory, setCategory] = useState(0);
+  const [tag, setTag] = useState("");
 
   const { posts, tags } = useSelector((state) => state.posts);
   const { lastComments } = useSelector((state) => state.comment);
@@ -33,12 +36,25 @@ export const Home = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (newCategory === 0) {
-      dispatch(fetchPosts());
-    } else {
-      dispatch(fetchPopulatePosts());
+    switch (newCategory) {
+      case 0:
+        dispatch(fetchPosts());
+        break;
+      case 1:
+        dispatch(fetchPopulatePosts());
+        break;
+      case 2:
+        dispatch(fetchPostsOnTag(tag));
+        break;
+      default:
+        dispatch(fetchPosts());
     }
-  }, [dispatch, newCategory]);
+  }, [dispatch, newCategory, tag]);
+
+  const onClickTag = (tag) => {
+    setCategory(2);
+    setTag(tag);
+  };
 
   return (
     <>
@@ -58,13 +74,14 @@ export const Home = () => {
             ) : (
               <Post
                 key={index}
+                onClickTag={onClickTag}
                 _id={obj._id}
                 title={obj.title}
                 imageUrl={
                   obj.imageUrl ? `http://localhost:4444${obj.imageUrl}` : ""
                 }
                 user={obj.user}
-                createdAt={obj.createdAt}
+                createdAt={moment(obj.createdAt).format("DD-MMMM-YYYY-h-m-A")}
                 viewsCount={obj.viewsCount}
                 commentsCount={obj.comments.length}
                 // isLoading={true}
@@ -75,7 +92,11 @@ export const Home = () => {
           )}
         </Grid>
         <Grid xs={4} item>
-          <TagsBlock items={tags.items} isLoading={isTagsLoading} />
+          <TagsBlock
+            items={tags.items}
+            isLoading={isTagsLoading}
+            onClick={onClickTag}
+          />
           <CommentsBlock
             items={lastComments.items}
             isLoading={isLastCommentsLoading}

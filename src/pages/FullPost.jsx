@@ -8,6 +8,7 @@ import { CommentsBlock } from "../components";
 import axios from "../axios/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCommentsOnPost } from "../redux/slices/comments";
+import moment from "moment";
 
 export const FullPost = () => {
   const dispatch = useDispatch();
@@ -19,6 +20,8 @@ export const FullPost = () => {
   const [user, setUser] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
+
+  console.log(data);
 
   useEffect(() => {
     setIsLoading(true);
@@ -34,17 +37,19 @@ export const FullPost = () => {
         alert("Ошибка при получении статьи");
       });
     setIsLoading(true);
+  }, [id, dispatch]);
+
+  useEffect(() => {
     axios
       .get(`auth/me`)
       .then((res) => {
         setUser(res.data);
-        setIsLoading(false);
       })
       .catch((err) => {
         console.warn(err);
         alert("Ошибка при получении пользователя");
       });
-  }, [id, dispatch]);
+  }, []);
 
   if (isLoading) {
     return <Post isLoading={isLoading} isFullPost />;
@@ -57,7 +62,7 @@ export const FullPost = () => {
         title={data.title}
         imageUrl={data.imageUrl ? `http://localhost:4444${data.imageUrl}` : ""}
         user={data.user}
-        createdAt={data.createdAt}
+        createdAt={moment(data.createdAt).format("DD-MMMM-YYYY-h-m-A")}
         viewsCount={data.viewsCount}
         commentsCount={data.comments.length}
         tags={data.tags}

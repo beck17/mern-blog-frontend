@@ -15,6 +15,7 @@ import { fetchRemovePost } from "../../redux/slices/posts";
 
 export const Post = ({
   _id,
+  onClickTag,
   title,
   createdAt,
   imageUrl,
@@ -50,7 +51,13 @@ export const Post = ({
           </IconButton>
         </div>
       )}
-      {imageUrl && (
+      {imageUrl && isFullPost ? (
+        <img
+          className={clsx(styles.image, { [styles.imageFull]: isFullPost })}
+          src={imageUrl}
+          alt={title}
+        />
+      ) : (
         <Link to={`/posts/${_id}`}>
           <img
             className={clsx(styles.image, { [styles.imageFull]: isFullPost })}
@@ -69,8 +76,12 @@ export const Post = ({
           </h2>
           <ul className={styles.tags}>
             {tags.map((name) => (
-              <li key={name}>
-                <Link to={`/tag/${name}`}>#{name}</Link>
+              <li
+                key={name}
+                onClick={() => onClickTag(name)}
+                style={isFullPost ? { cursor: "text" } : { cursor: "pointer" }}
+              >
+                #{name}
               </li>
             ))}
           </ul>
