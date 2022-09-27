@@ -1,17 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import clsx from "clsx";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Clear";
 import EditIcon from "@mui/icons-material/Edit";
 import EyeIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import CommentIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 import styles from "./Post.module.scss";
 import { UserInfo } from "../UserInfo";
 import { PostSkeleton } from "./Skeleton";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { fetchRemovePost } from "../../redux/slices/posts";
+import {
+  fetchDislikePost,
+  fetchLikePost,
+  fetchRemovePost,
+} from "../../redux/slices/posts";
+import { Fab } from "@mui/material";
+import { FavoriteBorder } from "@mui/icons-material";
 
 export const Post = ({
   _id,
@@ -23,6 +30,8 @@ export const Post = ({
   viewsCount,
   commentsCount,
   tags,
+  likes,
+  isLike,
   children,
   isFullPost,
   isLoading,
@@ -35,6 +44,14 @@ export const Post = ({
 
   const onClickRemove = () => {
     dispatch(fetchRemovePost(_id));
+  };
+
+  const onClickLike = () => {
+    dispatch(fetchLikePost(_id));
+  };
+
+  const onClickDislike = () => {
+    dispatch(fetchDislikePost(_id));
   };
 
   return (
@@ -86,16 +103,32 @@ export const Post = ({
             ))}
           </ul>
           {children && <div className={styles.content}>{children}</div>}
-          <ul className={styles.postDetails}>
-            <li>
-              <EyeIcon />
-              <span>{viewsCount}</span>
-            </li>
-            <li>
-              <CommentIcon />
-              <span>{commentsCount}</span>
-            </li>
-          </ul>
+
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <ul className={styles.postDetails}>
+              <li>
+                <EyeIcon />
+                <span>{viewsCount}</span>
+              </li>
+              <li>
+                <CommentIcon />
+                <span>{commentsCount}</span>
+              </li>
+              <li>
+                <FavoriteBorder />
+                <span>{likes}</span>
+              </li>
+            </ul>
+            {isLike ? (
+              <Fab aria-label="like" onClick={onClickDislike}>
+                <FavoriteIcon style={{ color: "red" }} />
+              </Fab>
+            ) : (
+              <Fab aria-label="like" onClick={onClickLike}>
+                <FavoriteIcon style={{ color: "white" }} />
+              </Fab>
+            )}
+          </div>
         </div>
       </div>
     </div>

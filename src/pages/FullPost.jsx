@@ -58,13 +58,14 @@ export const FullPost = () => {
   return (
     <>
       <Post
-        id={data._id}
+        _id={data._id}
         title={data.title}
         imageUrl={data.imageUrl ? `http://localhost:4444${data.imageUrl}` : ""}
         user={data.user}
         createdAt={moment(data.createdAt).format("DD-MMMM-YYYY-h-m-A")}
         viewsCount={data.viewsCount}
         commentsCount={data.comments.length}
+        likes={data.likes}
         tags={data.tags}
         isFullPost
       >

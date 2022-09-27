@@ -32,6 +32,22 @@ export const fetchRemovePost = createAsyncThunk(
   async (id) => await axios.delete(`/posts/${id}`)
 );
 
+export const fetchLikePost = createAsyncThunk(
+  "posts/fetchLikePost",
+  async (id) => {
+    const { data } = await axios.post(`/like/${id}`);
+    return data.likes;
+  }
+);
+
+export const fetchDislikePost = createAsyncThunk(
+  "posts/fetchDislikePost",
+  async (id) => {
+    const { data } = await axios.post(`/dislike/${id}`);
+    return data.likes;
+  }
+);
+
 const initialState = {
   posts: {
     items: [],
@@ -40,6 +56,10 @@ const initialState = {
   tags: {
     items: [],
     status: "loading",
+  },
+  likes: {
+    count: 0,
+    isLike: false,
   },
 };
 
@@ -106,7 +126,32 @@ const postSlice = createSlice({
         (obj) => obj._id !== action.meta.arg
       );
     },
+    // // лайк
+    // [fetchLikePost.pending]: (state) => {
+    //   state.likes.count = 0;
+    //   state.likes.isLike = false;
+    // },
+    // [fetchLikePost.fulfilled]: (state, action) => {
+    //   state.likes.count = action.payload;
+    //   state.likes.isLike = true;
+    // },
+    // [fetchLikePost.rejected]: (state) => {
+    //   state.likes.count = 0;
+    //   state.likes.isLike = false;
+    // },
+    // // дизлайк
+    // [fetchDislikePost.pending]: (state) => {
+    //   state.likes.count = 0;
+    //   state.likes.isLike = true;
+    // },
+    // [fetchDislikePost.fulfilled]: (state, action) => {
+    //   state.likes.count = action.payload;
+    //   state.likes.isLike = false;
+    // },
+    // [fetchDislikePost.rejected]: (state) => {
+    //   state.likes.count = 0;
+    //   state.likes.isLike = true;
+    // },
   },
 });
-
 export const postsReducer = postSlice.reducer;
