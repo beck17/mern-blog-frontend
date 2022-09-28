@@ -36,7 +36,15 @@ export const fetchLikePost = createAsyncThunk(
   "posts/fetchLikePost",
   async (id) => {
     const { data } = await axios.post(`/like/${id}`);
-    return data.likes;
+    return data;
+  }
+);
+
+export const fetchLikesOnPost = createAsyncThunk(
+  "posts/fetchLikesOnPost",
+  async (id) => {
+    const { data } = await axios.get(`/likes/${id}`);
+    return data;
   }
 );
 
@@ -44,7 +52,7 @@ export const fetchDislikePost = createAsyncThunk(
   "posts/fetchDislikePost",
   async (id) => {
     const { data } = await axios.post(`/dislike/${id}`);
-    return data.likes;
+    return data;
   }
 );
 
@@ -58,7 +66,7 @@ const initialState = {
     status: "loading",
   },
   likes: {
-    count: 0,
+    count: [],
     isLike: false,
   },
 };
@@ -126,32 +134,43 @@ const postSlice = createSlice({
         (obj) => obj._id !== action.meta.arg
       );
     },
-    // // лайк
-    // [fetchLikePost.pending]: (state) => {
-    //   state.likes.count = 0;
-    //   state.likes.isLike = false;
-    // },
-    // [fetchLikePost.fulfilled]: (state, action) => {
-    //   state.likes.count = action.payload;
-    //   state.likes.isLike = true;
-    // },
-    // [fetchLikePost.rejected]: (state) => {
-    //   state.likes.count = 0;
-    //   state.likes.isLike = false;
-    // },
-    // // дизлайк
-    // [fetchDislikePost.pending]: (state) => {
-    //   state.likes.count = 0;
-    //   state.likes.isLike = true;
-    // },
-    // [fetchDislikePost.fulfilled]: (state, action) => {
-    //   state.likes.count = action.payload;
-    //   state.likes.isLike = false;
-    // },
-    // [fetchDislikePost.rejected]: (state) => {
-    //   state.likes.count = 0;
-    //   state.likes.isLike = true;
-    // },
+    // лайк
+    [fetchLikePost.pending]: (state) => {
+      // state.likes.count = state.likes.count;
+      state.likes.isLike = false;
+    },
+    [fetchLikePost.fulfilled]: (state, action) => {
+      state.likes.count = state.likes.count.concat(action.payload);
+      state.likes.isLike = true;
+    },
+    [fetchLikePost.rejected]: (state) => {
+      state.likes.count = [];
+      state.likes.isLike = false;
+    },
+    // дизлайк
+    [fetchDislikePost.pending]: (state) => {
+      state.likes.isLike = true;
+    },
+    [fetchDislikePost.fulfilled]: (state, action) => {
+      state.likes.isLike = false;
+      const arr = action.payload;
+      arr.pop();
+      state.likes.count = arr;
+    },
+    [fetchDislikePost.rejected]: (state) => {
+      state.likes.count = [];
+      state.likes.isLike = true;
+    },
+    //получение всех лайков на пост
+    [fetchLikesOnPost.pending]: (state) => {
+      state.likes.count = [];
+    },
+    [fetchLikesOnPost.fulfilled]: (state, action) => {
+      state.likes.count = action.payload;
+    },
+    [fetchLikesOnPost.rejected]: (state) => {
+      state.likes.count = [];
+    },
   },
 });
 export const postsReducer = postSlice.reducer;

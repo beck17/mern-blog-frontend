@@ -50,7 +50,6 @@ export const commentSlice = createSlice({
   extraReducers: {
     //create comment
     [fetchComments.pending]: (state) => {
-      state.comments.items = [];
       state.comments.status = "loading";
     },
     [fetchComments.fulfilled]: (state, action) => {
@@ -58,7 +57,6 @@ export const commentSlice = createSlice({
       state.comments.status = "loaded";
     },
     [fetchComments.rejected]: (state) => {
-      state.comments = [];
       state.comments.status = "error";
     },
 

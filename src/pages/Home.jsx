@@ -22,7 +22,7 @@ export const Home = () => {
   const [newCategory, setCategory] = useState(0);
   const [tag, setTag] = useState("");
 
-  const { posts, tags, likes } = useSelector((state) => state.posts);
+  const { posts, tags } = useSelector((state) => state.posts);
   const { lastComments } = useSelector((state) => state.comment);
   const userData = useSelector((state) => state.auth.data);
 
@@ -86,8 +86,8 @@ export const Home = () => {
                 commentsCount={obj.comments.length}
                 // isLoading={true}
                 tags={obj.tags}
-                likes={obj.likes}
-                isLike={likes.isLike}
+                likes={obj.likes.length}
+                isFullPost={false}
                 isEditable={userData?._id === obj.user._id}
               />
             )

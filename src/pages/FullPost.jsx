@@ -9,19 +9,34 @@ import axios from "../axios/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCommentsOnPost } from "../redux/slices/comments";
 import moment from "moment";
+import { fetchLikesOnPost } from "../redux/slices/posts";
 
 export const FullPost = () => {
   const dispatch = useDispatch();
 
   const { comments } = useSelector((state) => state.comment);
+  const { likes } = useSelector((state) => state.posts);
   const isCommentsLoading = comments.status === "loading";
 
   const [data, setData] = useState({});
+  const [likesOnPost, setLikesOnPost] = useState({});
   const [user, setUser] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
 
-  console.log(data);
+  useEffect(() => {
+    dispatch(fetchLikesOnPost(id));
+    axios
+      .get(`/likes/${id}`)
+      .then((res) => {
+        setLikesOnPost(res.data);
+        // setIsLoading(false);
+      })
+      .catch((err) => {
+        console.warn(err);
+        alert("Ошибка при получении статьи");
+      });
+  }, [dispatch, id]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -64,8 +79,9 @@ export const FullPost = () => {
         user={data.user}
         createdAt={moment(data.createdAt).format("DD-MMMM-YYYY-h-m-A")}
         viewsCount={data.viewsCount}
-        commentsCount={data.comments.length}
-        likes={data.likes}
+        commentsCount={comments.items.length}
+        likes={likes.count.length}
+        isLike={likes.isLike}
         tags={data.tags}
         isFullPost
       >
