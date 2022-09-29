@@ -11,7 +11,7 @@ import styles from "./Post.module.scss";
 import { UserInfo } from "../UserInfo";
 import { PostSkeleton } from "./Skeleton";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   fetchDislikePost,
   fetchLikePost,
@@ -20,6 +20,7 @@ import {
 } from "../../redux/slices/posts";
 import { Fab } from "@mui/material";
 import { FavoriteBorder } from "@mui/icons-material";
+import { selectIsAuth } from "../../redux/slices/auth";
 
 export const Post = ({
   _id,
@@ -42,6 +43,9 @@ export const Post = ({
   if (isLoading) {
     return <PostSkeleton />;
   }
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const isAuth = useSelector(selectIsAuth);
 
   const onClickRemove = () => {
     dispatch(fetchRemovePost(_id));
@@ -126,7 +130,11 @@ export const Post = ({
                   <FavoriteIcon style={{ color: "red" }} />
                 </Fab>
               ) : (
-                <Fab aria-label="like" onClick={onClickLike}>
+                <Fab
+                  aria-label="like"
+                  onClick={onClickLike}
+                  disabled={isAuth ? false : true}
+                >
                   <FavoriteIcon style={{ color: "white" }} />
                 </Fab>
               )

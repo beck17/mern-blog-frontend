@@ -6,10 +6,18 @@ export const fetchAuth = createAsyncThunk("auth/fetchAuth", async (params) => {
   return data;
 });
 
-export const fetchRegister = createAsyncThunk(
-  "auth/fetchRegister",
+export const fetchRegisterUser = createAsyncThunk(
+  "auth/fetchRegisterUser",
   async (params) => {
-    const { data } = await axios.post("/auth/register", params);
+    const { data } = await axios.post("/auth/registerUser", params);
+    return data;
+  }
+);
+
+export const fetchRegisterPublish = createAsyncThunk(
+  "auth/fetchRegisterPublish",
+  async (params) => {
+    const { data } = await axios.post("/auth/registerPublish", params);
     return data;
   }
 );
@@ -57,15 +65,27 @@ const authSlice = createSlice({
       state.data = null;
       state.status = "error";
     },
-    [fetchRegister.pending]: (state) => {
+    [fetchRegisterUser.pending]: (state) => {
       state.data = null;
       state.status = "loading";
     },
-    [fetchRegister.fulfilled]: (state, action) => {
+    [fetchRegisterUser.fulfilled]: (state, action) => {
       state.data = action.payload;
       state.status = "loaded";
     },
-    [fetchRegister.rejected]: (state) => {
+    [fetchRegisterUser.rejected]: (state) => {
+      state.data = null;
+      state.status = "error";
+    },
+    [fetchRegisterPublish.pending]: (state) => {
+      state.data = null;
+      state.status = "loading";
+    },
+    [fetchRegisterPublish.fulfilled]: (state, action) => {
+      state.data = action.payload;
+      state.status = "loaded";
+    },
+    [fetchRegisterPublish.rejected]: (state) => {
       state.data = null;
       state.status = "error";
     },

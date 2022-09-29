@@ -8,10 +8,10 @@ import Avatar from "@mui/material/Avatar";
 import styles from "./Login.module.scss";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchRegister, selectIsAuth } from "../../redux/slices/auth";
+import { fetchRegisterPublish, selectIsAuth } from "../../redux/slices/auth";
 import { Navigate } from "react-router-dom";
 
-export const Registration = () => {
+export const RegistrationPublish = () => {
   const isAuth = useSelector(selectIsAuth);
   const dispatch = useDispatch();
 
@@ -29,7 +29,7 @@ export const Registration = () => {
   });
 
   const onSubmit = async (values) => {
-    const data = await dispatch(fetchRegister(values));
+    const data = await dispatch(fetchRegisterPublish(values));
 
     if (!data.payload) {
       alert("Не удалось зарегистрироваться");

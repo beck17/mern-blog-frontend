@@ -11,6 +11,9 @@ export const Header = () => {
   const isAuth = useSelector(selectIsAuth);
   const dispatch = useDispatch();
 
+  const userData = useSelector((state) => state.auth.data);
+  console.log(userData);
+
   const onClickLogout = () => {
     dispatch(logout());
     window.localStorage.removeItem("token");
@@ -26,9 +29,13 @@ export const Header = () => {
           <div className={styles.buttons}>
             {isAuth ? (
               <>
-                <Link to="/add-post">
-                  <Button variant="contained">Написать статью</Button>
-                </Link>
+                {userData.role === "USER" ? (
+                  ""
+                ) : (
+                  <Link to="/add-post">
+                    <Button variant="contained">Написать статью</Button>
+                  </Link>
+                )}
                 <Button
                   onClick={onClickLogout}
                   variant="contained"

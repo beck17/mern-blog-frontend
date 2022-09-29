@@ -2,7 +2,15 @@ import React from "react";
 import Container from "@mui/material/Container";
 
 import { Header } from "./components";
-import { Home, FullPost, Registration, AddPost, Login } from "./pages";
+import {
+  Home,
+  FullPost,
+  RegistrationUser,
+  RegistrationPublish,
+  AddPost,
+  Login,
+  Register,
+} from "./pages";
 import { Route, Routes } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
@@ -25,7 +33,9 @@ function App() {
           <Route path="/posts/:id" element={<FullPost />} />
           <Route path="/add-post" element={<AddPost />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Registration />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/registerUser" element={<RegistrationUser />} />
+          <Route path="/registerPublish" element={<RegistrationPublish />} />
           <Route path="/*" element={<h1>NOT FOUND 404</h1>} />
         </Routes>
       </Container>
