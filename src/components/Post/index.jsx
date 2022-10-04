@@ -12,12 +12,7 @@ import { UserInfo } from "../UserInfo";
 import { PostSkeleton } from "./Skeleton";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchDislikePost,
-  fetchLikePost,
-  fetchLikesOnPost,
-  fetchRemovePost,
-} from "../../redux/slices/posts";
+import { fetchLikePost, fetchRemovePost } from "../../redux/slices/posts";
 import { Fab } from "@mui/material";
 import { FavoriteBorder } from "@mui/icons-material";
 import { selectIsAuth } from "../../redux/slices/auth";
@@ -33,19 +28,22 @@ export const Post = ({
   commentsCount,
   tags,
   likes,
+  arrLikes,
   isLike,
+  userId,
   children,
   isFullPost,
   isLoading,
   isEditable,
 }) => {
   const dispatch = useDispatch();
-  if (isLoading) {
-    return <PostSkeleton />;
-  }
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const isAuth = useSelector(selectIsAuth);
+
+  if (isLoading) {
+    return <PostSkeleton />;
+  }
 
   const onClickRemove = () => {
     dispatch(fetchRemovePost(_id));
@@ -55,9 +53,13 @@ export const Post = ({
     dispatch(fetchLikePost(_id));
   };
 
-  const onClickDislike = () => {
-    dispatch(fetchDislikePost(_id));
+  const userExists = (username) => {
+    return arrLikes.some((el) => {
+      return el.author === username;
+    });
   };
+
+  const isLikePost = userExists(userId);
 
   return (
     <div className={clsx(styles.root, { [styles.rootFull]: isFullPost })}>
@@ -125,21 +127,17 @@ export const Post = ({
               </li>
             </ul>
             {isFullPost ? (
-              isLike ? (
-                <Fab aria-label="like" onClick={onClickDislike}>
+              isLikePost ? (
+                <Fab aria-label="like" onClick={onClickLike}>
                   <FavoriteIcon style={{ color: "red" }} />
                 </Fab>
               ) : (
-                <Fab
-                  aria-label="like"
-                  onClick={onClickLike}
-                  disabled={isAuth ? false : true}
-                >
+                <Fab aria-label="like" onClick={onClickLike} disabled={!isAuth}>
                   <FavoriteIcon style={{ color: "white" }} />
                 </Fab>
               )
             ) : (
-              <div> </div>
+              <div></div>
             )}
           </div>
         </div>

@@ -48,14 +48,6 @@ export const fetchLikesOnPost = createAsyncThunk(
   }
 );
 
-export const fetchDislikePost = createAsyncThunk(
-  "posts/fetchDislikePost",
-  async (id) => {
-    const { data } = await axios.post(`/dislike/${id}`);
-    return data;
-  }
-);
-
 const initialState = {
   posts: {
     items: [],
@@ -67,7 +59,6 @@ const initialState = {
   },
   likes: {
     count: [],
-    isLike: false,
   },
 };
 
@@ -135,31 +126,12 @@ const postSlice = createSlice({
       );
     },
     // лайк
-    [fetchLikePost.pending]: (state) => {
-      // state.likes.count = state.likes.count;
-      state.likes.isLike = false;
-    },
+
     [fetchLikePost.fulfilled]: (state, action) => {
-      state.likes.count = state.likes.count.concat(action.payload);
-      state.likes.isLike = true;
+      state.likes.count = action.payload;
     },
     [fetchLikePost.rejected]: (state) => {
       state.likes.count = [];
-      state.likes.isLike = false;
-    },
-    // дизлайк
-    [fetchDislikePost.pending]: (state) => {
-      state.likes.isLike = true;
-    },
-    [fetchDislikePost.fulfilled]: (state, action) => {
-      state.likes.isLike = false;
-      const arr = action.payload;
-      arr.pop();
-      state.likes.count = arr;
-    },
-    [fetchDislikePost.rejected]: (state) => {
-      state.likes.count = [];
-      state.likes.isLike = true;
     },
     //получение всех лайков на пост
     [fetchLikesOnPost.pending]: (state) => {

@@ -87,6 +87,7 @@ export const Home = () => {
                 // isLoading={true}
                 tags={obj.tags}
                 likes={obj.likes.length}
+                arrLikes={obj.likes}
                 isFullPost={false}
                 isEditable={userData?._id === obj.user._id}
               />

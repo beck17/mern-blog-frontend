@@ -12,7 +12,6 @@ export const Header = () => {
   const dispatch = useDispatch();
 
   const userData = useSelector((state) => state.auth.data);
-  console.log(userData);
 
   const onClickLogout = () => {
     dispatch(logout());

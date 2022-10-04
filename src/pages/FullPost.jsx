@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 
 import { Post } from "../components";
@@ -13,9 +13,11 @@ import { fetchLikesOnPost } from "../redux/slices/posts";
 
 export const FullPost = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { comments } = useSelector((state) => state.comment);
   const { likes } = useSelector((state) => state.posts);
+  const UserData = useSelector((state) => state.auth.data);
   const isCommentsLoading = comments.status === "loading";
 
   const [data, setData] = useState({});
@@ -62,7 +64,8 @@ export const FullPost = () => {
       })
       .catch((err) => {
         console.warn(err);
-        alert("Ошибка при получении пользователя");
+        alert("Вам необходимо быть зарегистрированным");
+        navigate("/");
       });
   }, []);
 
@@ -82,6 +85,8 @@ export const FullPost = () => {
         commentsCount={comments.items.length}
         likes={likes.count.length}
         isLike={likes.isLike}
+        arrLikes={likes.count}
+        userId={UserData._id}
         tags={data.tags}
         isFullPost
       >
