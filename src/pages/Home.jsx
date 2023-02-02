@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import moment from "moment";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Grid from "@mui/material/Grid";
@@ -14,7 +15,8 @@ import {
 } from "../redux/slices/posts";
 import { fetchLastComments } from "../redux/slices/comments";
 import { useDispatch, useSelector } from "react-redux";
-import moment from "moment";
+
+import styles from "./Home.module.scss";
 
 export const Home = () => {
   const dispatch = useDispatch();
@@ -67,7 +69,7 @@ export const Home = () => {
         <Tab label="Популярные" onClick={() => setCategory(1)} />
       </Tabs>
       <Grid container spacing={4}>
-        <Grid xs={8} item>
+        <Grid xs={8} item className={styles.posts}>
           {(isPostLoading ? [...Array(5)] : posts.items).map((obj, index) =>
             isPostLoading ? (
               <Post key={index} isLoading={true} />
@@ -94,7 +96,7 @@ export const Home = () => {
             )
           )}
         </Grid>
-        <Grid xs={4} item>
+        <Grid xs={4} item className={styles.sides}>
           <TagsBlock
             items={tags.items}
             isLoading={isTagsLoading}

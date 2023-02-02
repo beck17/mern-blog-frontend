@@ -1,0 +1,14 @@
+.posts {
+  flex-basis: 66.666667%;
+  max-width: 66.666667%;
+}
+
+@media (max-width: 650px) {
+  .posts {
+    flex-basis: 100% !important;
+    max-width: 100% !important;
+  }
+  .sides {
+    display: none;
+  }
+}

@@ -13,6 +13,13 @@ export const fetchPopulatePosts = createAsyncThunk(
     return data;
   }
 );
+export const fetchLikedPosts = createAsyncThunk(
+  "posts/fetchLikedPosts",
+  async () => {
+    const { data } = await axios.get("/liked");
+    return data;
+  }
+);
 
 export const fetchPostsOnTag = createAsyncThunk(
   "posts/fetchPostsOnTag",
@@ -106,6 +113,19 @@ const postSlice = createSlice({
       state.posts.items = [];
       state.posts.status = "error";
     },
+    // получение лайкнутых постов
+    [fetchLikedPosts.pending]: (state) => {
+      state.posts.items = [];
+      state.posts.status = "loading";
+    },
+    [fetchLikedPosts.fulfilled]: (state, action) => {
+      state.posts.items = action.payload;
+      state.posts.status = "loaded";
+    },
+    [fetchLikedPosts.rejected]: (state) => {
+      state.posts.items = [];
+      state.posts.status = "error";
+    },
     // получение тэгов
     [fetchTags.pending]: (state) => {
       state.tags.items = [];
@@ -145,4 +165,5 @@ const postSlice = createSlice({
     },
   },
 });
+
 export const postsReducer = postSlice.reducer;
