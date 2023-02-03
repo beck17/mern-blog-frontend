@@ -80,7 +80,9 @@ export const Home = () => {
                 _id={obj._id}
                 title={obj.title}
                 imageUrl={
-                  obj.imageUrl ? `http://localhost:4444${obj.imageUrl}` : ""
+                  obj.imageUrl
+                    ? `https://blogodintsov.onrender.com${obj.imageUrl}`
+                    : ""
                 }
                 user={obj.user}
                 createdAt={moment(obj.createdAt).format("DD-MMMM-YYYY-h-m-A")}

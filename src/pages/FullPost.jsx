@@ -78,7 +78,11 @@ export const FullPost = () => {
       <Post
         _id={data._id}
         title={data.title}
-        imageUrl={data.imageUrl ? `http://localhost:4444${data.imageUrl}` : ""}
+        imageUrl={
+          data.imageUrl
+            ? `https://blogodintsov.onrender.com${data.imageUrl}`
+            : ""
+        }
         user={data.user}
         createdAt={moment(data.createdAt).format("DD-MMMM-YYYY-h-m-A")}
         viewsCount={data.viewsCount}
